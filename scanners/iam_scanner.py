@@ -78,4 +78,14 @@ IAM_RULES = [
         "remediation": "Enable MFA for all users with console access.",
         "cis_benchmark": "CIS 1.6",
     },
+    {
+        "id": "IAM-008",
+        "name": "Password reuse prevention",
+        "description": "Password policy should prevent reuse of last 24 passwords",
+        "severity": SEVERITY_MEDIUM,
+        "check_field": "password_reuse_prevention",
+        "expected_min": 24,
+        "remediation": "Set password reuse prevention to 24 or more.",
+        "cis_benchmark": "CIS 1.9",
+    },
 ]
