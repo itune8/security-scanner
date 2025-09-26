@@ -88,4 +88,14 @@ IAM_RULES = [
         "remediation": "Set password reuse prevention to 24 or more.",
         "cis_benchmark": "CIS 1.9",
     },
+    {
+        "id": "IAM-009",
+        "name": "Service account key management",
+        "description": "Service accounts should use managed keys, not user-created",
+        "severity": SEVERITY_MEDIUM,
+        "check_field": "user_managed_service_keys",
+        "expected": 0,
+        "remediation": "Migrate to provider-managed keys for service accounts.",
+        "cis_benchmark": "CIS 1.7",
+    },
 ]
