@@ -98,4 +98,14 @@ IAM_RULES = [
         "remediation": "Migrate to provider-managed keys for service accounts.",
         "cis_benchmark": "CIS 1.7",
     },
+    {
+        "id": "IAM-010",
+        "name": "Require uppercase in password",
+        "description": "Password policy should require uppercase letters",
+        "severity": SEVERITY_LOW,
+        "check_field": "require_uppercase",
+        "expected": True,
+        "remediation": "Enable uppercase letter requirement in password policy.",
+        "cis_benchmark": "CIS 1.8",
+    },
 ]
