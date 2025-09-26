@@ -131,3 +131,19 @@ def scan_iam(config):
         })
 
     return findings
+
+
+def get_default_iam_config():
+    """Return a sample IAM config for demonstration."""
+    return {
+        "root_mfa_enabled": False,
+        "min_password_length": 8,
+        "max_password_age_days": 180,
+        "unused_credentials_days": 120,
+        "access_key_age_days": 150,
+        "admin_user_count": 5,
+        "users_without_mfa": 3,
+        "password_reuse_prevention": 12,
+        "user_managed_service_keys": 2,
+        "require_uppercase": True,
+    }
