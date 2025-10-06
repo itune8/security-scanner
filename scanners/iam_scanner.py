@@ -120,8 +120,13 @@ def scan_iam(config):
         value = config.get(field)
 
         passed = False
+
         if "expected" in rule:
             passed = value == rule["expected"]
+        elif "expected_min" in rule:
+            passed = value >= rule["expected_min"]
+        elif "expected_max" in rule:
+            passed = value <= rule["expected_max"]
 
         findings.append({
             **rule,
