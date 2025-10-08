@@ -141,7 +141,10 @@ def scan_iam(config):
             **rule,
             "status": "PASS" if passed else "FAIL",
             "actual": value,
-            "detail": f"Actual: {value}",
+            "detail": (
+                f"Expected: {rule.get('expected', rule.get('expected_min', rule.get('expected_max')))}, "
+                f"Actual: {value}"
+            ),
         })
 
     return findings
