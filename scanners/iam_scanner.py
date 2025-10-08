@@ -119,6 +119,15 @@ def scan_iam(config):
         field = rule["check_field"]
         value = config.get(field)
 
+        if value is None:
+            findings.append({
+                **rule,
+                "status": "UNKNOWN",
+                "actual": "Not provided",
+                "detail": f"Configuration field '{field}' not found",
+            })
+            continue
+
         passed = False
 
         if "expected" in rule:
