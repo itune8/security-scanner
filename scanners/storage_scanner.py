@@ -92,4 +92,14 @@ STORAGE_RULES = [
         "remediation": "Enable object lock for data that requires WORM compliance.",
         "cis_benchmark": "CIS 3.9",
     },
+    {
+        "id": "STR-010",
+        "name": "KMS key rotation",
+        "description": "KMS keys used for encryption should have annual rotation enabled",
+        "severity": "High",
+        "check_field": "kms_key_rotation",
+        "expected": True,
+        "remediation": "Enable automatic annual rotation for KMS customer-managed keys.",
+        "cis_benchmark": "CIS 3.10",
+    },
 ]
