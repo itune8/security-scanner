@@ -132,3 +132,19 @@ def scan_storage(config):
         })
 
     return findings
+
+
+def get_default_storage_config():
+    """Return a sample storage config for demonstration."""
+    return {
+        "public_buckets": 2,
+        "encryption_at_rest": True,
+        "enforce_https": False,
+        "versioning_enabled": False,
+        "access_logging_enabled": False,
+        "mfa_delete_enabled": False,
+        "cross_region_replication": False,
+        "lifecycle_policies": True,
+        "object_lock_enabled": False,
+        "kms_key_rotation": False,
+    }
