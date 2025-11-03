@@ -148,3 +148,4 @@ def get_default_storage_config():
         "object_lock_enabled": False,
         "kms_key_rotation": False,
     }
+
