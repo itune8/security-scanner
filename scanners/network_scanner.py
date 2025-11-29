@@ -103,3 +103,32 @@ NETWORK_RULES = [
         "cis_benchmark": "CIS 4.10",
     },
 ]
+
+
+def scan_network(config):
+    """Scan network configuration against security rules."""
+    findings = []
+
+    for rule in NETWORK_RULES:
+        field = rule["check_field"]
+        value = config.get(field)
+
+        if value is None:
+            findings.append({
+                **rule,
+                "status": "UNKNOWN",
+                "actual": "Not provided",
+                "detail": f"Configuration field '{field}' not found",
+            })
+            continue
+
+        passed = value == rule["expected"]
+
+        findings.append({
+            **rule,
+            "status": "PASS" if passed else "FAIL",
+            "actual": value,
+            "detail": f"Expected: {rule['expected']}, Actual: {value}",
+        })
+
+    return findings
