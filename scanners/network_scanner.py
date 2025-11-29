@@ -92,4 +92,14 @@ NETWORK_RULES = [
         "remediation": "Enable DDoS protection (e.g., AWS Shield, Azure DDoS Protection).",
         "cis_benchmark": "CIS 4.9",
     },
+    {
+        "id": "NET-010",
+        "name": "TLS enforcement",
+        "description": "All external endpoints should enforce TLS 1.2+",
+        "severity": "High",
+        "check_field": "tls_enforced",
+        "expected": True,
+        "remediation": "Configure load balancers and CDN to enforce TLS 1.2 or higher.",
+        "cis_benchmark": "CIS 4.10",
+    },
 ]
