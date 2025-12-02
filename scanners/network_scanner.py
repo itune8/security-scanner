@@ -148,3 +148,4 @@ def get_default_network_config():
         "ddos_protection_enabled": False,
         "tls_enforced": True,
     }
+
