@@ -132,3 +132,19 @@ def scan_network(config):
         })
 
     return findings
+
+
+def get_default_network_config():
+    """Return a sample network config for demonstration."""
+    return {
+        "using_default_vpc": True,
+        "ssh_open_to_world": True,
+        "rdp_open_to_world": False,
+        "flow_logs_enabled": False,
+        "sg_allow_all_inbound": True,
+        "nacl_open_admin_ports": True,
+        "db_in_private_subnet": False,
+        "waf_enabled": False,
+        "ddos_protection_enabled": False,
+        "tls_enforced": True,
+    }
