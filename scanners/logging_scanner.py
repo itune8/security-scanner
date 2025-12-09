@@ -32,4 +32,14 @@ LOGGING_RULES = [
         "remediation": "Enable KMS encryption for log storage buckets.",
         "cis_benchmark": "CIS 2.3",
     },
+    {
+        "id": "LOG-004",
+        "name": "Log retention period",
+        "description": "Logs should be retained for at least 365 days",
+        "severity": "Medium",
+        "check_field": "log_retention_days",
+        "expected_min": 365,
+        "remediation": "Set log retention to at least 365 days for compliance.",
+        "cis_benchmark": "CIS 2.4",
+    },
 ]
