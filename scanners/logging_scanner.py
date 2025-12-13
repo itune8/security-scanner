@@ -103,3 +103,39 @@ LOGGING_RULES = [
         "cis_benchmark": "CIS 2.10",
     },
 ]
+
+
+def scan_logging(config):
+    """Scan logging configuration against security rules."""
+    findings = []
+
+    for rule in LOGGING_RULES:
+        field = rule["check_field"]
+        value = config.get(field)
+
+        if value is None:
+            findings.append({
+                **rule,
+                "status": "UNKNOWN",
+                "actual": "Not provided",
+                "detail": f"Configuration field '{field}' not found",
+            })
+            continue
+
+        passed = False
+        if "expected" in rule:
+            passed = value == rule["expected"]
+        elif "expected_min" in rule:
+            passed = value >= rule["expected_min"]
+
+        findings.append({
+            **rule,
+            "status": "PASS" if passed else "FAIL",
+            "actual": value,
+            "detail": (
+                f"Expected: {rule.get('expected', rule.get('expected_min'))}, "
+                f"Actual: {value}"
+            ),
+        })
+
+    return findings
