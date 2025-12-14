@@ -155,3 +155,4 @@ def get_default_logging_config():
         "alert_nacl_changes": False,
         "config_recording_enabled": False,
     }
+
