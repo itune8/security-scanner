@@ -139,3 +139,19 @@ def scan_logging(config):
         })
 
     return findings
+
+
+def get_default_logging_config():
+    """Return a sample logging config for demonstration."""
+    return {
+        "audit_logging_enabled": True,
+        "log_integrity_validation": False,
+        "logs_encrypted": True,
+        "log_retention_days": 90,
+        "alert_unauthorized_api": False,
+        "alert_root_usage": False,
+        "alert_iam_changes": True,
+        "alert_sg_changes": False,
+        "alert_nacl_changes": False,
+        "config_recording_enabled": False,
+    }
