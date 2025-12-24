@@ -1,6 +1,8 @@
 """Compliance framework mapping and scoring engine."""
 
 import json
+from datetime import datetime
+
 
 FRAMEWORKS = {
     "CIS Benchmark": {
@@ -14,6 +16,16 @@ FRAMEWORKS = {
                               "STR-006", "STR-007", "STR-008", "STR-009", "STR-010"],
             "4.x - Networking": ["NET-001", "NET-002", "NET-003", "NET-004", "NET-005",
                                  "NET-006", "NET-007", "NET-008", "NET-009", "NET-010"],
+        },
+    },
+    "SOC 2": {
+        "description": "Service Organization Control Type 2",
+        "sections": {
+            "Security": ["IAM-001", "IAM-007", "NET-002", "NET-003", "NET-005",
+                         "STR-001", "STR-002", "LOG-001"],
+            "Availability": ["NET-009", "STR-007", "NET-008"],
+            "Confidentiality": ["STR-002", "STR-003", "LOG-003", "NET-010"],
+            "Privacy": ["IAM-002", "IAM-003", "LOG-004"],
         },
     },
 }
