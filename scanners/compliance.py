@@ -28,4 +28,16 @@ FRAMEWORKS = {
             "Privacy": ["IAM-002", "IAM-003", "LOG-004"],
         },
     },
+    "NIST 800-53": {
+        "description": "NIST Security and Privacy Controls",
+        "sections": {
+            "Access Control (AC)": ["IAM-001", "IAM-002", "IAM-005", "IAM-006",
+                                    "IAM-007", "NET-002", "NET-003"],
+            "Audit (AU)": ["LOG-001", "LOG-002", "LOG-003", "LOG-004", "LOG-005",
+                           "LOG-006", "LOG-007"],
+            "System Protection (SC)": ["NET-005", "NET-008", "NET-010",
+                                       "STR-002", "STR-003"],
+            "Configuration (CM)": ["NET-001", "NET-004", "LOG-010"],
+        },
+    },
 }
