@@ -41,3 +41,46 @@ FRAMEWORKS = {
         },
     },
 }
+
+
+def calculate_compliance_score(findings, framework_name="CIS Benchmark"):
+    """Calculate compliance score for a given framework."""
+    framework = FRAMEWORKS.get(framework_name)
+    if not framework:
+        return None
+
+    finding_map = {f["id"]: f for f in findings}
+    section_scores = {}
+    total_pass = 0
+    total_checks = 0
+
+    for section, rule_ids in framework["sections"].items():
+        section_pass = 0
+        section_total = 0
+
+        for rule_id in rule_ids:
+            finding = finding_map.get(rule_id)
+            if finding:
+                section_total += 1
+                if finding["status"] == "PASS":
+                    section_pass += 1
+
+        score = (section_pass / section_total * 100) if section_total > 0 else 0
+        section_scores[section] = {
+            "passed": section_pass,
+            "total": section_total,
+            "score": round(score, 1),
+        }
+        total_pass += section_pass
+        total_checks += section_total
+
+    overall = (total_pass / total_checks * 100) if total_checks > 0 else 0
+
+    return {
+        "framework": framework_name,
+        "description": framework["description"],
+        "overall_score": round(overall, 1),
+        "total_passed": total_pass,
+        "total_checks": total_checks,
+        "sections": section_scores,
+    }
