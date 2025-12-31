@@ -84,3 +84,18 @@ def calculate_compliance_score(findings, framework_name="CIS Benchmark"):
         "total_checks": total_checks,
         "sections": section_scores,
     }
+
+
+def _calculate_risk_score(findings):
+    """Calculate overall risk score (0-100, lower is better)."""
+    weights = {"Critical": 10, "High": 7, "Medium": 4, "Low": 1, "Info": 0}
+    max_possible = sum(
+        weights.get(f.get("severity", "Info"), 0) for f in findings
+    )
+    actual_risk = sum(
+        weights.get(f.get("severity", "Info"), 0)
+        for f in findings if f["status"] == "FAIL"
+    )
+    if max_possible == 0:
+        return 0
+    return round((actual_risk / max_possible) * 100, 1)
