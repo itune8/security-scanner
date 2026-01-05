@@ -99,3 +99,21 @@ def _calculate_risk_score(findings):
     if max_possible == 0:
         return 0
     return round((actual_risk / max_possible) * 100, 1)
+
+
+def _prioritize_remediations(failed_findings):
+    """Prioritize remediations by severity."""
+    severity_order = {"Critical": 0, "High": 1, "Medium": 2, "Low": 3, "Info": 4}
+    sorted_findings = sorted(
+        failed_findings,
+        key=lambda f: severity_order.get(f.get("severity", "Info"), 4),
+    )
+    return [
+        {
+            "id": f["id"],
+            "name": f["name"],
+            "severity": f["severity"],
+            "remediation": f["remediation"],
+        }
+        for f in sorted_findings
+    ]
