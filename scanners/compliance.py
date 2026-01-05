@@ -117,3 +117,41 @@ def _prioritize_remediations(failed_findings):
         }
         for f in sorted_findings
     ]
+
+
+def generate_report(findings, configs):
+    """Generate a complete security audit report."""
+    severity_counts = {"Critical": 0, "High": 0, "Medium": 0, "Low": 0, "Info": 0}
+    failed_findings = [f for f in findings if f["status"] == "FAIL"]
+
+    for f in failed_findings:
+        sev = f.get("severity", "Info")
+        severity_counts[sev] = severity_counts.get(sev, 0) + 1
+
+    passed = sum(1 for f in findings if f["status"] == "PASS")
+    failed = len(failed_findings)
+    unknown = sum(1 for f in findings if f["status"] == "UNKNOWN")
+
+    compliance_scores = {}
+    for fw_name in FRAMEWORKS:
+        score = calculate_compliance_score(findings, fw_name)
+        if score:
+            compliance_scores[fw_name] = score
+
+    risk_score = _calculate_risk_score(findings)
+
+    return {
+        "timestamp": datetime.now().isoformat(),
+        "summary": {
+            "total_checks": len(findings),
+            "passed": passed,
+            "failed": failed,
+            "unknown": unknown,
+            "pass_rate": round(passed / len(findings) * 100, 1) if findings else 0,
+        },
+        "severity_breakdown": severity_counts,
+        "risk_score": risk_score,
+        "compliance": compliance_scores,
+        "findings": findings,
+        "top_remediations": _prioritize_remediations(failed_findings),
+    }
