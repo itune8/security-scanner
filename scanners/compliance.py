@@ -155,3 +155,8 @@ def generate_report(findings, configs):
         "findings": findings,
         "top_remediations": _prioritize_remediations(failed_findings),
     }
+
+
+def export_report_json(report):
+    """Export report as JSON string."""
+    return json.dumps(report, indent=2, default=str)
