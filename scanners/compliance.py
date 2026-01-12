@@ -160,3 +160,4 @@ def generate_report(findings, configs):
 def export_report_json(report):
     """Export report as JSON string."""
     return json.dumps(report, indent=2, default=str)
+
