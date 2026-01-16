@@ -53,3 +53,25 @@ def plot_risk_gauge(risk_score):
     ))
     fig.update_layout(margin=dict(t=60, b=20), height=250)
     return fig
+
+
+def plot_severity_breakdown(severity_counts):
+    """Bar chart of findings by severity."""
+    severities = ["Critical", "High", "Medium", "Low"]
+    counts = [severity_counts.get(s, 0) for s in severities]
+    colors = [SEVERITY_COLORS[s] for s in severities]
+    fig = go.Figure(go.Bar(x=severities, y=counts, marker_color=colors, text=counts, textposition="outside"))
+    fig.update_layout(yaxis_title="Failed Checks", margin=dict(t=20, b=30), height=300)
+    return fig
+
+
+def plot_pass_fail_donut(passed, failed, unknown):
+    """Donut chart of pass/fail/unknown distribution."""
+    fig = go.Figure(go.Pie(
+        labels=["Passed", "Failed", "Unknown"],
+        values=[passed, failed, unknown],
+        marker_colors=["#2ecc71", "#e74c3c", "#95a5a6"],
+        hole=0.5, textinfo="label+value",
+    ))
+    fig.update_layout(margin=dict(t=30, b=30, l=30, r=30), height=300)
+    return fig
