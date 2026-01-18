@@ -75,3 +75,32 @@ def plot_pass_fail_donut(passed, failed, unknown):
     ))
     fig.update_layout(margin=dict(t=30, b=30, l=30, r=30), height=300)
     return fig
+
+
+def plot_compliance_radar(compliance_scores):
+    """Radar chart comparing compliance across frameworks."""
+    frameworks = list(compliance_scores.keys())
+    scores = [compliance_scores[fw]["overall_score"] for fw in frameworks]
+    scores.append(scores[0])
+    frameworks.append(frameworks[0])
+    fig = go.Figure(go.Scatterpolar(
+        r=scores, theta=frameworks, fill="toself",
+        fillcolor="rgba(52, 152, 219, 0.3)", line=dict(color="#3498db", width=2),
+    ))
+    fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 100])),
+                      margin=dict(t=40, b=40), height=350)
+    return fig
+
+
+def plot_section_scores(compliance_data):
+    """Horizontal bar chart of section scores within a framework."""
+    sections = list(compliance_data["sections"].keys())
+    scores = [compliance_data["sections"][s]["score"] for s in sections]
+    colors = ["#2ecc71" if s >= 70 else "#f39c12" if s >= 40 else "#e74c3c" for s in scores]
+    fig = go.Figure(go.Bar(
+        x=scores, y=sections, orientation="h", marker_color=colors,
+        text=[f"{s:.0f}%" for s in scores], textposition="outside",
+    ))
+    fig.update_layout(xaxis=dict(title="Compliance %", range=[0, 110]),
+                      margin=dict(t=20, b=30, l=150, r=50), height=300)
+    return fig
