@@ -104,3 +104,28 @@ def plot_section_scores(compliance_data):
     fig.update_layout(xaxis=dict(title="Compliance %", range=[0, 110]),
                       margin=dict(t=20, b=30, l=150, r=50), height=300)
     return fig
+
+
+def plot_category_heatmap(findings):
+    """Heatmap showing findings density by category and severity."""
+    categories = {}
+    for f in findings:
+        cat = f["id"].split("-")[0]
+        cat_name = {"IAM": "IAM", "NET": "Network", "STR": "Storage", "LOG": "Logging"}.get(cat, cat)
+        sev = f.get("severity", "Info")
+        status = f.get("status", "UNKNOWN")
+        if cat_name not in categories:
+            categories[cat_name] = {"Critical": 0, "High": 0, "Medium": 0, "Low": 0}
+        if status == "FAIL":
+            categories[cat_name][sev] = categories[cat_name].get(sev, 0) + 1
+
+    cat_names = list(categories.keys())
+    severities = ["Critical", "High", "Medium", "Low"]
+    z = [[categories[c].get(s, 0) for s in severities] for c in cat_names]
+
+    fig = go.Figure(go.Heatmap(
+        z=z, x=severities, y=cat_names, colorscale="RdYlGn_r",
+        text=z, texttemplate="%{text}", showscale=True,
+    ))
+    fig.update_layout(margin=dict(t=20, b=30, l=100), height=250)
+    return fig
