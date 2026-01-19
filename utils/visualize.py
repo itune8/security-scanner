@@ -129,4 +129,3 @@ def plot_category_heatmap(findings):
     ))
     fig.update_layout(margin=dict(t=20, b=30, l=100), height=250)
     return fig
-
