@@ -32,6 +32,43 @@ def render_header():
     """, unsafe_allow_html=True)
 
 
+def render_config_editor(category, default_config, rules):
+    """Render editable configuration for a scanner category."""
+    st.markdown(f"#### {category} Configuration")
+    config = {}
+    cols_per_row = 3
+    rule_chunks = [rules[i:i + cols_per_row] for i in range(0, len(rules), cols_per_row)]
+    for chunk in rule_chunks:
+        cols = st.columns(cols_per_row)
+        for col, rule in zip(cols, chunk):
+            field = rule["check_field"]
+            default = default_config.get(field, False)
+            label = f"{rule['id']}: {rule['name']}"
+            with col:
+                if isinstance(default, bool):
+                    config[field] = st.checkbox(label, value=default, key=f"{category}_{field}")
+                elif isinstance(default, int):
+                    config[field] = st.number_input(label, value=default, min_value=0, key=f"{category}_{field}")
+    return config
+
+
+def render_scanner_tab():
+    st.subheader("Security Configuration Scanner")
+    st.markdown("Configure your cloud environment settings below, then run the scan.")
+
+    with st.expander("IAM Settings", expanded=True):
+        iam_config = render_config_editor("IAM", get_default_iam_config(), IAM_RULES)
+    with st.expander("Network Settings"):
+        net_config = render_config_editor("Network", get_default_network_config(), NETWORK_RULES)
+    with st.expander("Storage Settings"):
+        str_config = render_config_editor("Storage", get_default_storage_config(), STORAGE_RULES)
+    with st.expander("Logging & Monitoring Settings"):
+        log_config = render_config_editor("Logging", get_default_logging_config(), LOGGING_RULES)
+
+    if st.button("Run Security Scan", type="primary", use_container_width=True):
+        st.info("Scan engine not connected yet.")
+
+
 def main():
     render_header()
 
