@@ -12,6 +12,13 @@ from scanners.iam_scanner import scan_iam, get_default_iam_config, IAM_RULES
 from scanners.network_scanner import scan_network, get_default_network_config, NETWORK_RULES
 from scanners.storage_scanner import scan_storage, get_default_storage_config, STORAGE_RULES
 from scanners.logging_scanner import scan_logging, get_default_logging_config, LOGGING_RULES
+from scanners.compliance import (
+    generate_report, calculate_compliance_score, export_report_json, FRAMEWORKS,
+)
+from utils.visualize import (
+    plot_risk_gauge, plot_severity_breakdown, plot_pass_fail_donut,
+    plot_compliance_radar, plot_section_scores, plot_category_heatmap,
+)
 
 st.set_page_config(
     page_title="CloudGuard",
@@ -66,7 +73,21 @@ def render_scanner_tab():
         log_config = render_config_editor("Logging", get_default_logging_config(), LOGGING_RULES)
 
     if st.button("Run Security Scan", type="primary", use_container_width=True):
-        st.info("Scan engine not connected yet.")
+        with st.spinner("Scanning cloud configuration..."):
+            iam_findings = scan_iam(iam_config)
+            net_findings = scan_network(net_config)
+            str_findings = scan_storage(str_config)
+            log_findings = scan_logging(log_config)
+
+            all_findings = iam_findings + net_findings + str_findings + log_findings
+            report = generate_report(all_findings, {
+                "iam": iam_config, "network": net_config,
+                "storage": str_config, "logging": log_config,
+            })
+
+        st.session_state["report"] = report
+        st.session_state["findings"] = all_findings
+        st.rerun()
 
 
 def main():
