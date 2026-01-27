@@ -39,6 +39,58 @@ def render_header():
     """, unsafe_allow_html=True)
 
 
+def render_findings_table(findings):
+    """Render findings as a styled table."""
+    rows = []
+    for f in findings:
+        status_icon = {"PASS": "✅", "FAIL": "❌", "UNKNOWN": "❓"}.get(f["status"], "❓")
+        sev_icon = {"Critical": "🔴", "High": "🟠", "Medium": "🟡", "Low": "🔵"}.get(f["severity"], "⚪")
+        rows.append({
+            "Status": f"{status_icon} {f['status']}",
+            "ID": f["id"],
+            "Check": f["name"],
+            "Severity": f"{sev_icon} {f['severity']}",
+            "Detail": f["detail"],
+            "CIS": f.get("cis_benchmark", ""),
+        })
+    df = pd.DataFrame(rows)
+    st.dataframe(df, use_container_width=True, height=400)
+
+
+def render_results_tab():
+    st.subheader("Scan Results")
+    if "report" not in st.session_state:
+        st.info("Run a security scan first to see results.")
+        return
+    report = st.session_state["report"]
+    findings = st.session_state["findings"]
+    summary = report["summary"]
+
+    m1, m2, m3, m4, m5 = st.columns(5)
+    m1.metric("Total Checks", summary["total_checks"])
+    m2.metric("Passed", summary["passed"])
+    m3.metric("Failed", summary["failed"], delta=f"-{summary['failed']}", delta_color="inverse")
+    m4.metric("Pass Rate", f"{summary['pass_rate']}%")
+    m5.metric("Risk Score", f"{report['risk_score']}/100")
+
+    st.divider()
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.plotly_chart(plot_risk_gauge(report["risk_score"]), use_container_width=True)
+    with col2:
+        st.plotly_chart(plot_pass_fail_donut(summary["passed"], summary["failed"], summary["unknown"]), use_container_width=True)
+    with col3:
+        st.plotly_chart(plot_severity_breakdown(report["severity_breakdown"]), use_container_width=True)
+
+    st.markdown("### Findings Heatmap")
+    st.plotly_chart(plot_category_heatmap(findings), use_container_width=True)
+
+    st.markdown("### All Findings")
+    filter_status = st.multiselect("Filter by status", ["PASS", "FAIL", "UNKNOWN"], default=["FAIL"])
+    filtered = [f for f in findings if f["status"] in filter_status]
+    render_findings_table(filtered)
+
+
 def render_config_editor(category, default_config, rules):
     """Render editable configuration for a scanner category."""
     st.markdown(f"#### {category} Configuration")
