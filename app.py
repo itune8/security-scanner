@@ -57,6 +57,40 @@ def render_findings_table(findings):
     st.dataframe(df, use_container_width=True, height=400)
 
 
+def render_upload_tab():
+    st.subheader("Import Configuration")
+    st.markdown("Upload a JSON configuration file to scan.")
+    uploaded = st.file_uploader("Upload config JSON", type=["json"])
+    if uploaded:
+        try:
+            config = json.loads(uploaded.read())
+            st.json(config)
+            if st.button("Scan Uploaded Config", type="primary"):
+                iam_config = config.get("iam", get_default_iam_config())
+                net_config = config.get("network", get_default_network_config())
+                str_config = config.get("storage", get_default_storage_config())
+                log_config = config.get("logging", get_default_logging_config())
+                all_findings = (scan_iam(iam_config) + scan_network(net_config)
+                    + scan_storage(str_config) + scan_logging(log_config))
+                report = generate_report(all_findings, config)
+                st.session_state["report"] = report
+                st.session_state["findings"] = all_findings
+                st.rerun()
+        except json.JSONDecodeError:
+            st.error("Invalid JSON file.")
+    else:
+        st.info("Upload a JSON file or use the Scanner tab to configure manually.")
+        with st.expander("Sample config format"):
+            sample = {
+                "iam": get_default_iam_config(),
+                "network": get_default_network_config(),
+                "storage": get_default_storage_config(),
+                "logging": get_default_logging_config(),
+            }
+            st.json(sample)
+            st.download_button("Download Sample Config", json.dumps(sample, indent=2), "sample_config.json", "application/json")
+
+
 def render_remediation_tab():
     st.subheader("Remediation Priorities")
     if "report" not in st.session_state:
