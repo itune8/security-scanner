@@ -57,6 +57,28 @@ def render_findings_table(findings):
     st.dataframe(df, use_container_width=True, height=400)
 
 
+def render_compliance_tab():
+    st.subheader("Compliance Dashboard")
+    if "report" not in st.session_state:
+        st.info("Run a security scan first to see compliance scores.")
+        return
+    report = st.session_state["report"]
+    compliance = report.get("compliance", {})
+    if compliance:
+        st.plotly_chart(plot_compliance_radar(compliance), use_container_width=True)
+        for fw_name, fw_data in compliance.items():
+            with st.expander(
+                f"{fw_name} — {fw_data['overall_score']}% "
+                f"({fw_data['total_passed']}/{fw_data['total_checks']} passed)",
+                expanded=True,
+            ):
+                st.caption(fw_data["description"])
+                st.plotly_chart(plot_section_scores(fw_data), use_container_width=True)
+                for section, scores in fw_data["sections"].items():
+                    status = "✅" if scores["score"] >= 80 else "⚠️" if scores["score"] >= 50 else "❌"
+                    st.write(f"{status} **{section}**: {scores['passed']}/{scores['total']} passed ({scores['score']}%)")
+
+
 def render_results_tab():
     st.subheader("Scan Results")
     if "report" not in st.session_state:
