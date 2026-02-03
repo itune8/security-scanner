@@ -57,6 +57,27 @@ def render_findings_table(findings):
     st.dataframe(df, use_container_width=True, height=400)
 
 
+def render_remediation_tab():
+    st.subheader("Remediation Priorities")
+    if "report" not in st.session_state:
+        st.info("Run a security scan first to see remediations.")
+        return
+    report = st.session_state["report"]
+    remediations = report.get("top_remediations", [])
+    if not remediations:
+        st.success("No failed checks — all clear!")
+        return
+    severity_icons = {"Critical": "🔴", "High": "🟠", "Medium": "🟡", "Low": "🔵"}
+    for i, rem in enumerate(remediations, 1):
+        icon = severity_icons.get(rem["severity"], "⚪")
+        with st.expander(f"{i}. {icon} [{rem['severity']}] {rem['id']} — {rem['name']}"):
+            st.markdown(f"**Remediation:** {rem['remediation']}")
+    st.divider()
+    st.markdown("### Export Report")
+    report_json = export_report_json(report)
+    st.download_button("Download Full Report (JSON)", report_json, "cloudguard_report.json", "application/json", use_container_width=True)
+
+
 def render_compliance_tab():
     st.subheader("Compliance Dashboard")
     if "report" not in st.session_state:
