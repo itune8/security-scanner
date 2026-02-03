@@ -226,6 +226,17 @@ def main():
         "🔍 Scanner", "📊 Results", "📋 Compliance", "🔧 Remediation", "📁 Import Config",
     ])
 
+    with tab1:
+        render_scanner_tab()
+    with tab2:
+        render_results_tab()
+    with tab3:
+        render_compliance_tab()
+    with tab4:
+        render_remediation_tab()
+    with tab5:
+        render_upload_tab()
+
     st.divider()
     st.caption("CloudGuard v1.0 | Cloud Security Posture Scanner")
 
